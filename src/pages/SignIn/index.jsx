@@ -8,7 +8,7 @@ export const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { signIn } = useContext(AuthContext);
+  const { signIn, loadingAuth } = useContext(AuthContext);
 
   function handleSigIn(e) {
     e.preventDefault();
@@ -38,7 +38,9 @@ export const SignIn = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button type="submit">Acessar</button>
+          <button type="submit">
+            {loadingAuth ? "Acessando..." : "Acessar"}
+          </button>
         </form>
         <Link to="/register">Criar uma conta</Link>
       </div>
