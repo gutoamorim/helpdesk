@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
-import avatar from "../assets/avatar.png";
-import { AuthContext } from "../contexts/auth";
+import { useContext } from "react";
+import avatar from "../../assets/avatar.png";
+import { AuthContext } from "../../contexts/auth";
 import { Link } from "react-router-dom";
 import { FiHome, FiUser, FiSettings } from "react-icons/fi";
 
