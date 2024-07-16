@@ -6,12 +6,33 @@ import { AuthContext } from "../../contexts/auth";
 import avatar from "../../assets/avatar.png";
 
 import "./profile.css";
+import { toast } from "react-toastify";
 
 export const Profile = () => {
-  const { user } = useContext(AuthContext);
+  const { user, setUser, storageUser, logout } = useContext(AuthContext);
+
+  const [nome, setNome] = useState(user && user.nome);
+  const [email, setEmail] = useState(user && user.email);
+
   const [avatarUrl, setAvatarUrl] = useState(user && user.avatarUrl);
+  const [imageAvatar, setImageAvatar] = useState(null);
 
   console.log(avatarUrl);
+
+  function handleFile(e) {
+    if (e.target.files[0]) {
+      const file = e.target.files[0];
+
+      if (file.type === "image/jpeg" || file.type === "image/png") {
+        setImageAvatar(file);
+        setAvatarUrl(URL.createObjectURL(file));
+      } else {
+        toast.error("Envie uma imagem do tipo PNG ou JPEG.");
+        setImageAvatar(null);
+        return;
+      }
+    }
+  }
 
   return (
     <div>
@@ -27,7 +48,7 @@ export const Profile = () => {
               <span>
                 <FiUpload color="#fff" size={25} />
               </span>
-              <input type="file" accept="image/*" />
+              <input type="file" accept="image/*" onChange={handleFile} />
               {avatarUrl === null ? (
                 <img
                   src={avatar}
@@ -46,15 +67,21 @@ export const Profile = () => {
             </label>
 
             <label>Nome</label>
-            <input type="text" placeholder="Seu nome..." />
+            <input
+              type="text"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+            />
             <label>E-mail</label>
-            <input type="email" placeholder="teste@teste.com" disabled />
+            <input type="email" value={email} disabled />
 
             <button type="submit">Salvar</button>
           </form>
         </div>
         <div className="container">
-          <button className="logout-btn">Sair</button>
+          <button className="logout-btn" onClick={logout}>
+            Sair
+          </button>
         </div>
       </div>
     </div>
