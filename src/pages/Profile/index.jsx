@@ -8,6 +8,10 @@ import avatar from "../../assets/avatar.png";
 import "./profile.css";
 import { toast } from "react-toastify";
 
+import { doc, updateDoc } from "firebase/firestore";
+import { db, storage } from "../../services/firebaseConnection";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+
 export const Profile = () => {
   const { user, setUser, storageUser, logout } = useContext(AuthContext);
 
@@ -31,6 +35,54 @@ export const Profile = () => {
         setImageAvatar(null);
         return;
       }
+    }
+  }
+
+  async function handleUpload() {
+    const currentUid = user.uid;
+    const uploadRef = ref(storage, `images/${currentUid}/${imageAvatar.name}`);
+
+    const oploadTask = uploadBytes(uploadRef, imageAvatar).then((snapshot) =>
+      getDownloadURL(snapshot.ref).then(async (downloadUel) => {
+        let urlFoto = downloadUel;
+
+        const docRef = doc(db, "users", user.uid);
+        await updateDoc(docRef, {
+          avatarUrl: urlFoto,
+          nome: nome,
+        }).then(() => {
+          let data = {
+            ...user,
+            nome: nome,
+            avatarUrl: urlFoto,
+          };
+
+          setUser(data);
+          storageUser(data);
+          toast.success("Perfil atualizado com sucesso!");
+        });
+      })
+    );
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (imageAvatar === null && nome !== "") {
+      const docRef = doc(db, "users", user.uid);
+      await updateDoc(docRef, {
+        nome: nome,
+      }).then(() => {
+        let data = {
+          ...user,
+          nome: nome,
+        };
+
+        setUser(data);
+        storageUser(data);
+        toast.success("Atualizado com sucesso!");
+      });
+    } else if (imageAvatar !== null && nome !== "") {
+      handleUpload();
     }
   }
 
@@ -75,7 +127,9 @@ export const Profile = () => {
             <label>E-mail</label>
             <input type="email" value={email} disabled />
 
-            <button type="submit">Salvar</button>
+            <button type="submit" onClick={handleSubmit}>
+              Salvar
+            </button>
           </form>
         </div>
         <div className="container">
