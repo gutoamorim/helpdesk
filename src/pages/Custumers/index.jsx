@@ -2,15 +2,36 @@ import { FiUser } from "react-icons/fi";
 import { Header } from "../../components/Header";
 import { Title } from "../../components/Title";
 import { useState } from "react";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../services/firebaseConnection";
+import { toast } from "react-toastify";
 
 export const Custumers = () => {
   const [nome, setNome] = useState("");
   const [cnpj, setCnpj] = useState("");
   const [endereco, setEndereco] = useState("");
 
-  function handleRegister(e) {
+  async function handleRegister(e) {
     e.preventDefault();
-    alert("teste");
+    if (nome !== "" && cnpj !== "" && endereco !== "") {
+      await addDoc(collection(db, "custumers"), {
+        nomeFantasia: nome,
+        cnpj: cnpj,
+        endereco: endereco,
+      })
+        .then(() => {
+          setNome("");
+          setCnpj("");
+          setEndereco("");
+          toast.success("Empresa caastrada com sucesso!");
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.error("Erro ao fazer o cadastro.");
+        });
+    } else {
+      toast.error("Preencha todos os campos.");
+    }
   }
 
   return (
