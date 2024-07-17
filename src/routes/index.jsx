@@ -5,6 +5,7 @@ import { SignUp } from "../pages/SignUp";
 import { Dashboard } from "../pages/Dashboard";
 import Private from "./Private";
 import { Profile } from "../pages/Profile";
+import { Custumers } from "../pages/Custumers";
 
 function RoutesApp() {
   return (
@@ -25,6 +26,14 @@ function RoutesApp() {
         element={
           <Private>
             <Profile />
+          </Private>
+        }
+      />
+      <Route
+        path="/custumers"
+        element={
+          <Private>
+            <Custumers />
           </Private>
         }
       />

@@ -22,7 +22,7 @@ export const Header = () => {
         <FiHome color="#fff" size={24} />
         Chamados
       </Link>
-      <Link to="/costumers">
+      <Link to="/custumers">
         <FiUser color="#fff" size={24} />
         Clientes
       </Link>
