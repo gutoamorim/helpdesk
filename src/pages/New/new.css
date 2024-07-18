@@ -1,0 +1,22 @@
+form textarea {
+  resize: none;
+  height: 100px;
+  font-family: sans-serif;
+}
+
+form input[type="radio"] {
+  margin: 15px 0;
+}
+
+form input[type="radio"]:not(:first-child) {
+  margin-left: 15px;
+}
+
+.status span {
+  padding-left: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.status {
+  margin-bottom: 1rem;
+}
