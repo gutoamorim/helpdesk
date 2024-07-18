@@ -4,8 +4,9 @@ import { Title } from "../../components/Title";
 import "./new.css";
 import { FiPlusCircle } from "react-icons/fi";
 import { AuthContext } from "../../contexts/auth";
-import { collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../../services/firebaseConnection";
+import { toast } from "react-toastify";
 
 const listRef = collection(db, "custumers");
 
@@ -64,6 +65,27 @@ export const New = () => {
     setCustumerSelected(e.target.value);
   }
 
+  async function handleRegister(e) {
+    e.preventDefault();
+    await addDoc(collection(db, "chamados"), {
+      createdAt: new Date(),
+      cliente: custumers[custumerSelected].nomeFantasia,
+      clienteId: custumers[custumerSelected].id,
+      assunto: assunto,
+      complemento: complemento,
+      status: status,
+      userId: user.uid,
+    })
+      .then(() => {
+        toast.success("Chamado Registrado!");
+        setComplemento("");
+        setCustumerSelected(0);
+      })
+      .catch((error) => {
+        toast.error("Erro ao registrar.");
+        console.log(error);
+      });
+  }
   return (
     <div>
       <Header />
@@ -73,7 +95,7 @@ export const New = () => {
         </Title>
 
         <div className="container">
-          <form className="form-profile">
+          <form className="form-profile" onSubmit={handleRegister}>
             <label>Clientes</label>
             {loadCustumers ? (
               <input type="text" disabled={true} value="Carregando..." />
