@@ -27,6 +27,8 @@ export const Dashboard = () => {
   const [chamados, setchamados] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEmpty, setIsEmpty] = useState(false);
+  const [lastDocs, setLastDocs] = useState();
+  const [loadingMore, setLoadingMore] = useState();
 
   async function handleLogout() {
     await logout();
@@ -34,7 +36,7 @@ export const Dashboard = () => {
 
   useEffect(() => {
     async function loadChamados() {
-      const q = query(listRef, orderBy("createdAt", "desc"), limit(5));
+      const q = query(listRef, orderBy("createdAt", "desc"), limit(1));
 
       const querySnapshot = await getDocs(q);
       setchamados([]);
@@ -66,10 +68,29 @@ export const Dashboard = () => {
           complemento: doc.data().complemento,
         });
       });
-      setchamados((chamados) => [chamados, ...lista]);
+
+      setchamados((chamados) => [...chamados, ...lista]);
+      const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+      setLastDocs(lastDoc);
     } else {
       setIsEmpty(true);
     }
+
+    setLoadingMore(false);
+  }
+
+  async function handleMore() {
+    setLoadingMore(true);
+
+    const q = query(
+      listRef,
+      orderBy("createdAt", "desc"),
+      startAfter(lastDocs),
+      limit(1)
+    );
+
+    const querySnapshot = await getDocs(q);
+    await updateState(querySnapshot);
   }
 
   if (loading) {
@@ -133,7 +154,10 @@ export const Dashboard = () => {
                       <td data-label="Status">
                         <span
                           className="badge"
-                          style={{ backgroundColor: "#999" }}
+                          style={{
+                            backgroundColor:
+                              item.status === "Aberto" ? "#5cb85c" : "#999",
+                          }}
                         >
                           {item.status}
                         </span>
@@ -158,6 +182,13 @@ export const Dashboard = () => {
                 })}
               </tbody>
             </table>
+
+            {loadingMore && <h3>Buscando mais chamados...</h3>}
+            {!loadingMore && !isEmpty && (
+              <button className="btn-more" onClick={handleMore}>
+                Buscar mais
+              </button>
+            )}
           </>
         )}
       </div>
