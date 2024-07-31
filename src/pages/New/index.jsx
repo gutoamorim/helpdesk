@@ -52,8 +52,8 @@ export const New = () => {
           setLoadCustumers(false);
         })
         .catch((erro) => {
-          console.log("Erro ao buscar os clientes: " + erro);
-          setLoadCustumers(custumers);
+          console.log("Erro ao buscar os clientes", erro);
+          setLoadCustumers(false);
           setCustumers([{ id: 1, nomeFantasia: "Freela" }]);
         });
     }
@@ -82,10 +82,11 @@ export const New = () => {
         setCustumerSelected(0);
       })
       .catch((error) => {
-        toast.error("Erro ao registrar.");
+        toast.error("Ops, erro ao registrar chamado, tente mais tarde.");
         console.log(error);
       });
   }
+
   return (
     <div>
       <Header />
