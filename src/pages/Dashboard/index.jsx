@@ -170,12 +170,13 @@ export const Dashboard = () => {
                         >
                           <FiSearch size={17} color="#fff" />
                         </button>
-                        <button
+                        <Link
+                          to={`/new/${item.id}`}
                           className="action"
                           style={{ backgroundColor: "#f6a935" }}
                         >
                           <FiEdit2 size={17} color="#fff" />
-                        </button>
+                        </Link>
                       </td>
                     </tr>
                   );
