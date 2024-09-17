@@ -1,0 +1,30 @@
+name: Deploy React App to HostGator
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js, npm, and dependencies
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18.x"
+
+      - run: npm install
+      - run: npm run build
+
+      - name: Deploy to HostGator via FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          server: ${{ secrets.FTP_URL }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: dist/
+          server-dir: /help_desk/
